@@ -19,7 +19,7 @@ Esse projeto foi desenvolvido utilizando a seguinte versão do node:
 
 ### Passos de Instalação
 
-1. Clone o repositório: `git clone git@github.com:deyvissonbrenoveras/task-management-api.git`
+1. Clone o repositório: `git clone https://github.com/ryan-mendes/task-management-api.git`
 2. Navegue até o diretório do projeto: `cd task-management-api`
 3. Instale as dependências: `npm install`
 
@@ -134,3 +134,11 @@ curl --request DELETE \
   --url http://localhost:3000/task/uuid-here \
   --header 'Authorization: Bearer token'
 ```
+
+## Créditos
+
+Projeto desenvolvido como estudo de NestJS, a partir da proposta original de [deyvissonbrenoveras/task-management-api](https://github.com/deyvissonbrenoveras/task-management-api).
+
+## Autor
+
+**Ryan Mendes** · [LinkedIn](https://www.linkedin.com/in/ryan-mendes-b7197322a/)
