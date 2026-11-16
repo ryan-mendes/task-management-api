@@ -1,144 +1,85 @@
 # Task Management API
 
-## Introdução
+REST API for managing tasks, built with NestJS and PostgreSQL. Users authenticate with JWT and can create, update, filter and delete their tasks.
 
-- CRUD de tarefas (Controllers, Decorators, Services, Modules)
-- Validação de DTO com class-validator
-- Variáveis de ambiente com ConfigService
-- Autenticação (JwtService, App guard)
-- Password hash
-- Banco de dados - TODO
+![NestJS](https://img.shields.io/badge/NestJS-10-E0234E?logo=nestjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
 
-## Instalação
+## Features
 
-### Pré-requisitos
+- Task CRUD with filtering by title and status
+- User registration and JWT authentication (global guard)
+- Password hashing with bcrypt
+- DTO validation with `class-validator`
+- Schema versioning with TypeORM migrations
+- Environment-based configuration via `ConfigService`
 
-Esse projeto foi desenvolvido utilizando a seguinte versão do node:
+## Tech stack
 
-[Node v18.12.0 LTS](https://nodejs.org/en/blog/release/v18.12.0)
+| Layer | Technology |
+|---|---|
+| Framework | NestJS 10 |
+| Language | TypeScript |
+| Database | PostgreSQL + TypeORM |
+| Auth | `@nestjs/jwt`, bcrypt |
+| Infra | Docker Compose |
 
-### Passos de Instalação
+## Project structure
 
-1. Clone o repositório: `git clone https://github.com/ryan-mendes/task-management-api.git`
-2. Navegue até o diretório do projeto: `cd task-management-api`
-3. Instale as dependências: `npm install`
-
-
-## Configuração
-
-- Crie copie o arquivo .env.example e renomeie para .env, preenchendo todas a variáveis.
-- Inicialize o container do banco de dados com: 
 ```
-  docker-compose up -d
+src/
+├── auth/       # Login endpoint, JWT guard
+├── users/      # User registration
+├── task/       # Task controller, service and DTOs
+└── db/         # Entities, migrations and TypeORM config
 ```
-- Execute as migrations com:
-```
+
+## Getting started
+
+**Requirements:** Node.js 18+, Docker
+
+```bash
+git clone https://github.com/ryan-mendes/task-management-api.git
+cd task-management-api
+npm install
+cp .env.example .env
+docker compose up -d        # starts PostgreSQL
 npm run migration:run
-```  
+npm run start:dev           # http://localhost:3000
+```
+
+## API
+
+All `/task` routes require `Authorization: Bearer <token>`.
+
+| Method | Route | Description |
+|---|---|---|
+| POST | `/users` | Create a user |
+| POST | `/auth/login` | Authenticate and receive a JWT |
+| POST | `/task` | Create a task |
+| GET | `/task` | List tasks (`?title=&status=`) |
+| GET | `/task/:id` | Get a task by id |
+| PUT | `/task/:id` | Update a task |
+| DELETE | `/task/:id` | Delete a task |
+
+Example:
+
+```bash
+curl -X POST http://localhost:3000/task \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Write docs","description":"API reference","status":"TO_DO","expirationDate":"2025-01-31"}'
+```
 
 ## Migrations
 
-Criar uma migration:
-```
-npm run migration:create -name=nome-da-migration
-```
-
-Executar as migrations:
-```
-  npm run migration:run
+```bash
+npm run migration:create -name=migration-name
+npm run migration:run
+npm run migration:revert
 ```
 
-Reverter as migrations:
-```
-  npm run migration:revert
-```  
+## Credits
 
-
-## Uso
-
-O task-management-api expõe um endpoint para cadastro, atualização, busca e exclusão de tarefas. também foi desenvolvido um endpoint para criação de usuários e um endpoint de autenticação, onde é possível realizar o login passando um usuário e senha.
-
-### Curls
-
-Copie os Curls abaixo e cole no seu testador de apis favorito, como [Insomnia](https://insomnia.rest/download) ou [Postman](https://www.postman.com/).
-
-#### Usuários
-```
-curl --request POST \
-  --url http://localhost:3000/users \
-  --header 'Content-Type: application/json' \
-  --data ' {
-	 "username": "username",
-	 "password": "password"
- }'
-```
-
-#### Autenticação
-```
-curl --request POST \
-  --url http://localhost:3000/auth/login \
-  --header 'Content-Type: application/json' \
-  --data ' {
-	 "username": "username",
-	 "password": "password"
- }'
-```
-
-#### Tarefas
-
-##### Criar
-```
-curl --request POST \
-  --url http://localhost:3000/task \
-  --header 'Authorization: Bearer token' \
-  --header 'Content-Type: application/json' \
-  --data ' {
-    "title":"title",
-    "description": "description",
-    "expirationDate": "2024-01-01"
- }'
-```
-
-##### Atualizar
-```
-curl --request PUT \
-  --url http://localhost:3000/task \
-  --header 'Authorization: Bearer token' \
-  --header 'Content-Type: application/json' \
-  --data ' {
-	 "id": "uuid here",
-    "title":"updated title",
-    "description": "updated description",
-    "status": "IN_PROGRESS",
-    "expirationDate": "2024-01-04"
- }'
- ```
-
-##### Encontrar por id
-```
-curl --request GET \
-  --url http://localhost:3000/task/1 \
-  --header 'Authorization: Bearer token'
- ```
-
-##### Buscar com filtros
-```
- curl --request GET \
-  --url 'http://localhost:3000/task?title=task%203&status=IN_PROGRESS' \
-  --header 'Authorization: Bearer token'
-```
-
-##### Excluir
-```
-curl --request DELETE \
-  --url http://localhost:3000/task/uuid-here \
-  --header 'Authorization: Bearer token'
-```
-
-## Créditos
-
-Projeto desenvolvido como estudo de NestJS, a partir da proposta original de [deyvissonbrenoveras/task-management-api](https://github.com/deyvissonbrenoveras/task-management-api).
-
-## Autor
-
-**Ryan Mendes** · [LinkedIn](https://www.linkedin.com/in/ryan-mendes-b7197322a/)
+Built as a NestJS study project based on the original proposal by [deyvissonbrenoveras/task-management-api](https://github.com/deyvissonbrenoveras/task-management-api).
